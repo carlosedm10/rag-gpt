@@ -26,13 +26,13 @@ ZHIPUAI_EMBEDDING_MODEL_NAME = "embedding-2"
 OLLAMA_EMBEDDING_MODEL_NAME = "mxbai-embed-large"
 
 # Maximum length of text chunks when splitting up large documents
-MAX_CHUNK_LENGTH = 1300
+MAX_CHUNK_LENGTH = 2000
 
 # Amount of overlap between consecutive text chunks
-CHUNK_OVERLAP = 100
+CHUNK_OVERLAP = 200
 
 # Maximum allowable length for a single query string
-MAX_QUERY_LENGTH = 200
+MAX_QUERY_LENGTH = 400
 
 # Number of top documents to recall for initial retrieval in search operations
 RECALL_TOP_K = 5
@@ -87,8 +87,8 @@ LOCAL_FILE_DOWNLOAD_DIR = "download_dir"
 # Maximum number of concurrent requests allowed for file writing
 MAX_CONCURRENT_WRITES = 5
 
-# Maximum file size (30MB in bytes)
-MAX_FILE_SIZE = 30 * 1024 * 1024
+# Maximum file size (200MB in bytes)
+MAX_FILE_SIZE = 200 * 1024 * 1024
 
 # Maximum number of files per upload
 MAX_LOCAL_FILE_BATCH_LENGTH = 10

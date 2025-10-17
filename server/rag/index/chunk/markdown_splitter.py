@@ -42,8 +42,16 @@ class MarkdownTextSplitter(RecursiveCharacterTextSplitter):
     ) -> None:
         """Create a new TextSplitter."""
         super().__init__(keep_separator=keep_separator, **kwargs)
+        # Prefer heading/code/list boundaries first, then sentences/clauses
         self._separators = separators or [
-            "\n\n", "\n", "。|！|？", "\.\s|\!\s|\?\s", "；|;\s", "，|,\s"
+            r"\n#+\s",                 # Markdown headings
+            r"\n```[\s\S]*?```\n",   # Code blocks
+            r"\n[-*+]\s",             # Unordered list items
+            r"\n\d+\.\s",            # Ordered list items
+            "\n\n", "\n",           # Paragraph and line breaks
+            "。|！|？",                 # CJK sentence punctuation
+            "\\.\s|\!\s|\?\s",    # EN sentence punctuation
+            "；|;\s", "，|,\s"       # Clauses
         ]
         self._is_separator_regex = is_separator_regex
         self._is_remove_empty_line = is_remove_empty_line

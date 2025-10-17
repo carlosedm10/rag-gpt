@@ -1,11 +1,10 @@
 import os
 import html2text
-from llama_parse import LlamaParse
 import mammoth
 from server.logger.logger_config import my_logger as logger
 
-USE_LLAMA_PARSE = int(os.getenv('USE_LLAMA_PARSE'))
-LLAMA_CLOUD_API_KEY = os.getenv('LLAMA_CLOUD_API_KEY')
+USE_LLAMA_PARSE = int(os.getenv("USE_LLAMA_PARSE"))
+LLAMA_CLOUD_API_KEY = os.getenv("LLAMA_CLOUD_API_KEY")
 
 
 class AsyncDocxLoader:
@@ -15,9 +14,11 @@ class AsyncDocxLoader:
 
     async def get_content(self) -> str:
         try:
-            content = ''
+            content = ""
 
             if USE_LLAMA_PARSE:
+                from llama_parse import LlamaParse
+
                 parser = LlamaParse(
                     api_key=LLAMA_CLOUD_API_KEY,
                     result_type="markdown",
@@ -26,6 +27,7 @@ class AsyncDocxLoader:
                 text_vec = []
 
                 import nest_asyncio
+
                 nest_asyncio.apply()
 
                 documents = parser.load_data(self.file_path)
@@ -33,8 +35,8 @@ class AsyncDocxLoader:
                     text_vec.append(doc.text)
                 content = "\n\n".join(text_vec)
             else:
-                html_text = ''
-                with open(self.file_path, 'rb') as fd:
+                html_text = ""
+                with open(self.file_path, "rb") as fd:
                     result = mammoth.convert_to_html(fd)
                     html_text = result.value
                     messages = result.messages
@@ -58,4 +60,4 @@ class AsyncDocxLoader:
             return content
         except Exception as e:
             logger.error(f"get_content is failed, exception: {e}")
-            return ''
+            return ""

@@ -1,10 +1,9 @@
 import os
-from llama_parse import LlamaParse
 from pptx import Presentation
 from server.logger.logger_config import my_logger as logger
 
-USE_LLAMA_PARSE = int(os.getenv('USE_LLAMA_PARSE'))
-LLAMA_CLOUD_API_KEY = os.getenv('LLAMA_CLOUD_API_KEY')
+USE_LLAMA_PARSE = int(os.getenv("USE_LLAMA_PARSE"))
+LLAMA_CLOUD_API_KEY = os.getenv("LLAMA_CLOUD_API_KEY")
 
 
 class AsyncPptxLoader:
@@ -14,9 +13,11 @@ class AsyncPptxLoader:
 
     async def get_content(self) -> str:
         try:
-            content = ''
+            content = ""
 
             if USE_LLAMA_PARSE:
+                from llama_parse import LlamaParse
+
                 parser = LlamaParse(
                     api_key=LLAMA_CLOUD_API_KEY,
                     result_type="markdown",
@@ -25,6 +26,7 @@ class AsyncPptxLoader:
                 text_vec = []
 
                 import nest_asyncio
+
                 nest_asyncio.apply()
 
                 documents = parser.load_data(self.file_path)
@@ -52,7 +54,7 @@ class AsyncPptxLoader:
                         for paragraph in text_frame.paragraphs:
                             # Combine the runs in the paragraph to form a full text
                             text_runs = [run.text for run in paragraph.runs]
-                            paragraph_text = ''.join(text_runs).strip()
+                            paragraph_text = "".join(text_runs).strip()
 
                             # Convert the text into a markdown bullet point
                             if paragraph_text:
@@ -60,11 +62,11 @@ class AsyncPptxLoader:
 
                 if markdown_parts:
                     # Join all parts to form the final markdown text
-                    content = ''.join(markdown_parts)
+                    content = "".join(markdown_parts)
 
             if not content:
                 logger.warning(f"file_path: '{self.file_path}' is empty!")
             return content
         except Exception as e:
             logger.error(f"get_content is failed, exception: {e}")
-            return ''
+            return ""
